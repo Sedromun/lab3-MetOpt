@@ -1,5 +1,5 @@
+import math
 from enum import Enum
-
 import numpy as np
 
 
@@ -20,7 +20,7 @@ class LinearRegression:
         self.initial_lr = learning_rate
         self.batch_size = batch_size
         self.scheduling = scheduling
-        self.w = [0 for _ in range(X.shape[1] + 1)]
+        self.w = [1 for _ in range(X.shape[1] + 1)]
         self.ws = [self.w]
         self.errors = []
         self.epoch_drop = epoch_drop
@@ -52,8 +52,8 @@ class LinearRegression:
         self.X = np.array(new_X)
         self.y = np.array(new_Y)
 
-    def __MSE(self, y: [float], x: [float]) -> float:
-        return np.sum((y - x) ** 2)
+    def __MSE(self, deviation: [float]) -> float:
+        return np.sum(deviation ** 2)
 
     def __SGD(self, learning_rate: float):
         batches_X = [self.X[i:i + self.batch_size] for i in range(0, len(self.X), self.batch_size)]
@@ -62,14 +62,15 @@ class LinearRegression:
             batch_x = batches_X[i]
             batch_y = batches_y[i]
             predictions = np.dot(batch_x, self.w)
-            gradient = 2 * batch_x.T.dot(predictions - batch_y) / batch_x.shape[0]
-
+            dev = predictions - batch_y
+            gradient = 2 * batch_x.T.dot(dev) / self.X.shape[0]
             self.w -= learning_rate * gradient
+
             self.ws.append(self.w)
-            self.errors.append(self.__MSE(batch_y, batch_x))
+            self.errors.append(self.__MSE(dev))
 
     def predict(self, x: [float]) -> [float]:
-        return np.dot(x, self.get_weights()) + self.get_bias()
+        return np.dot(np.transpose(x), self.get_weights()) + self.get_bias()
 
     def get_weights(self):
         return self.w[:-1]

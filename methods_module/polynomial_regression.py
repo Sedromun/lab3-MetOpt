@@ -9,8 +9,8 @@ class LearningRateScheduling(Enum):
     STEPPED = 2
 
 
-class LinearRegression:
-    def __init__(self, X, y,  epochs: int, learning_rate: float, batch_size: int,
+class PolynomialRegression:
+    def __init__(self, X, y, degree: int, epochs: int, learning_rate: float, batch_size: int,
                  scheduling: LearningRateScheduling = LearningRateScheduling.CONSTANT,
                  epoch_drop: int = 10, drop: float = 0.5, exp_k: float = 0.1):
         self.X = X
@@ -20,7 +20,7 @@ class LinearRegression:
         self.initial_lr = learning_rate
         self.batch_size = batch_size
         self.scheduling = scheduling
-        self.w = [0 for _ in range(X.shape[1] + 1)]
+        self.w = [[0 for _ in range(X.shape[1])] for _ in range(degree + 1)]
         self.ws = [self.w]
         self.errors = []
         self.epoch_drop = epoch_drop
@@ -63,8 +63,8 @@ class LinearRegression:
             batch_y = batches_y[i]
             predictions = np.dot(batch_x, self.w)
             gradient = 2 * batch_x.T.dot(predictions - batch_y) / batch_x.shape[0]
-
             self.w -= learning_rate * gradient
+
             self.ws.append(self.w)
             self.errors.append(self.__MSE(batch_y, batch_x))
 
