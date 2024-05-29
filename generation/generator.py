@@ -1,6 +1,8 @@
 import json
 from random import uniform
 
+from generation.degenerator import load_static_file
+
 
 def generate_dataset(
         dimension: int,
@@ -15,5 +17,7 @@ def generate_dataset(
 
 
 if __name__ == '__main__':
-    points, values = generate_dataset(1, 100, 0.5, 2)
-    print(json.dumps({"points": points, "values": values}))
+    # points, values = generate_dataset(1, 100, 0.5, 2)
+    # print(json.dumps({"points": points, "values": values}))
+
+    print(load_static_file("dataset_1.json"))
