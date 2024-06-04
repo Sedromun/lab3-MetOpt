@@ -69,6 +69,11 @@ class LinearRegression:
             self.ws.append(self.w)
             self.errors.append(self.__MSE(dev))
 
+    def get_error(self):
+        predictions = np.dot(self.X, self.w)
+        dev = predictions - self.y
+        return self.__MSE(dev)
+
     def predict(self, x: [float]) -> [float]:
         return np.dot(np.transpose(x), self.get_weights()) + self.get_bias()
 
