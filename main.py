@@ -1,7 +1,4 @@
-from sklearn.datasets import make_regression
-
 from generation.degenerator import load_static_file
-from methods_module.lib_regression_methods import create, predict
 from methods_module.linear_regression import LinearRegression, LearningRateScheduling
 from visualisation_module.visualisation import *
 

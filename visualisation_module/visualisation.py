@@ -35,12 +35,13 @@ def draw_chart(
 
 def draw_simple_graphic(
         points: list[tuple[float, float]],
-        c: float
+        k: float,
+        b: float
 ):
     points = np.array(sorted(points))
     fig, ax = plt.subplots()  # Create a figure containing a single axes.
     plt.scatter(list(map(lambda x: x - points[0][0], points[:, 0])), list(map(lambda x: x - points[0][1], points[:, 1])))
-    plt.plot([0, points[-1][0] - points[0][0]], [0, c * (points[-1][0] - points[0][0])], color='r', markersize=3)
+    plt.plot([0, points[-1][0] - points[0][0]], [b - points[0][1], k * (points[-1][0] - points[0][0]) + b - points[0][1]], color='r', markersize=3)
 
     # ax.plot(
     #     [x for x, _ in points],
