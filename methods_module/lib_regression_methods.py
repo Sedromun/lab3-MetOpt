@@ -1,47 +1,53 @@
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-import seaborn as sns
-
 import tensorflow as tf
-
-from tensorflow import keras
-from tensorflow.keras import layers
 from sklearn.datasets import make_regression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_squared_error
+import pandas as pd
+import numpy as np
+import time
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Input
+
+X, y = make_regression(n_samples=1000, n_features=1, noise=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train).astype(np.float32)
+X_test = scaler.transform(X_test).astype(np.float32)
 
 
-def create(X, y):
-    model = TFRegressor(X.shape[1])
-    model.compile(
-        optimizer=tf.optimizers.SGD(learning_rate=0.01),
-        loss='mean_squared_error',
-    )
-    model.fit(X, y, validation_split=0.25, batch_size=64, epochs=10, verbose=False)
-    return model
+optimizers = {
+    'SGD': tf.optimizers.SGD(learning_rate=0.01),
+    'Momentum': tf.optimizers.SGD(learning_rate=0.01, momentum=0.9),
+    'Nesterov': tf.optimizers.SGD(learning_rate=0.01, momentum=0.9, nesterov=True),
+    'AdaGrad': tf.optimizers.Adagrad(learning_rate=0.01),
+    'RMSProp': tf.optimizers.RMSprop(learning_rate=0.01),
+    'Adam': tf.optimizers.Adam(learning_rate=0.01)
+}
 
+results = []
 
-def predict(model, X):
-    return model.predict(X).flatten()
+for name, optimizer in optimizers.items():
+    model = Sequential()
+    model.add(Input((X_train.shape[1],)))
+    model.add(Dense(1))
+    model.compile(optimizer=optimizer, loss='mean_squared_error')
 
+    start_time = time.time()
+    model.fit(X_train, y_train, epochs=100, verbose=0)
+    training_time = time.time() - start_time
 
-def TFRegressor(n_features, seed=42):
-    return tf.keras.Sequential([
-        layers.Input((n_features,)),
-        layers.Dense(
-            units=1, use_bias=True,
-            kernel_initializer=keras.initializers.RandomNormal(stddev=0.01, seed=seed)
-        )
-    ])
+    y_pred = model.predict(X_test)
 
+    mse = mean_squared_error(y_test, y_pred)
 
-# X, y = make_regression(n_samples=10, n_features=1, n_informative=10)
-# model = TFRegressor(X.shape[1])
-#
-# model.compile(
-#     optimizer=tf.optimizers.SGD(learning_rate=0.01),
-#     loss='mean_squared_error',
-# )
-#
-# model.fit(X, y, validation_split=0.25, batch_size=64, epochs=10, verbose=False)
-# print(model.predict(X).flatten())
-# print(y)
+    results.append({
+        'Optimizer': name,
+        'MSE': mse,
+        'Training Time (s)': training_time
+    })
+
+results_df = pd.DataFrame(results)
+print(results_df)
