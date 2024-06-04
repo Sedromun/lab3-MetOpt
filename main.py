@@ -4,17 +4,20 @@ from visualisation_module.visualisation import *
 
 
 if __name__ == '__main__':
-    data = load_static_file("noised_data.json")
+    data = load_static_file("noisy_1d.json")
 
     # X = np.array([[1], [1.5], [2], [2], [3], [3.3], [4], [5]])
     # y = np.array([0.9, 1.4, 2.1, 2, 3.1, 3.25, 4.2, 4.9])
 
-    X = np.array(data['points'])
-    y = np.array(data['values'])
+    points = data['points']
+    values = data['values']
+    X = np.array(points)
+    y = np.array(values)
 
-    lr = LinearRegression(X, y, epochs=100, learning_rate=0.05, batch_size=20,
-                          scheduling=LearningRateScheduling.STEPPED)
+    lr = LinearRegression(X, y, epochs=1000, learning_rate=0.005, batch_size=5,
+                          scheduling=LearningRateScheduling.EXPONENTIAL)
     lr.fit()
     print(lr.get_weights())
     print(lr.get_bias())
     print(lr.predict(X[0]))
+    draw_simple_graphic([(points[i][0], values[i]) for i in range(len(points))], lr.get_weights()[0], lr.get_bias())
