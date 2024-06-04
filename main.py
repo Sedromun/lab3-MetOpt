@@ -1,5 +1,6 @@
 from generation.degenerator import load_static_file
 from methods_module.linear_regression import LinearRegression, LearningRateScheduling
+from methods_module.polynomial_regression import PolynomialRegression
 from visualisation_module.visualisation import *
 
 
@@ -21,3 +22,4 @@ if __name__ == '__main__':
     print(lr.get_bias())
     print(lr.predict(X[0]))
     draw_simple_graphic([(points[i][0], values[i]) for i in range(len(points))], lr.get_weights()[0], lr.get_bias())
+
