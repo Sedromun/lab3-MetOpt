@@ -1,8 +1,5 @@
 import json
-from random import uniform
-
-from generation.degenerator import load_static_file
-
+from random import uniform, randint
 
 def generate_dataset(
         dimension: int,
@@ -13,8 +10,10 @@ def generate_dataset(
 ):
     points = [[(i // (size ** (dimension - 1 - j))) % size for j in range(dimension)] for i in range(size ** dimension)]
     weights = [uniform(weights_lb, weights_ub) for _ in range(dimension)]
-    values = [sum([(point[i] + (size / 2) * uniform(-noise, noise)) * weights[i] for i in range(dimension)]) for point
-              in points]
+    values = [
+        sum([(point[i] + (size / 2) * uniform(-noise, noise)) * weights[i] for i in range(dimension)])
+        if randint(1, 15) != 15 else uniform(0, size * sum([weights[i] for i in range(dimension)]))
+        for point in points]
     return points, values
 
 
@@ -33,4 +32,4 @@ def generate_to_file(
 
 
 if __name__ == '__main__':
-    generate_to_file(1, 100, 0.5, 10, 0.4, "noisy_1d.json")
+    generate_to_file(1, 100, 0.5, 10, 0.3, "noisy_1d.json")

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def draw_simple_graphic(
+def regression_result_visualisation(
         points: list[tuple[float, float]],
         k: float,
         b: float
@@ -20,5 +20,8 @@ def draw_simple_graphic(
     # )  # Plot some data on the axes.
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
-    plt.title(f'IDK')
+    plt.title(f'LINEAR REGRESSION')
     plt.show()
+
+
+
