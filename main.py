@@ -31,11 +31,24 @@ if __name__ == '__main__':
     # print(lr.get_bias())
     # print(lr.predict(X[0]))
 
-    config = configs[2]
-    regression_stat(X, y, config['class'], config['args'])
+    config = configs[0]
+    # regression_stat(X, y, config['class'], config['args'])
 
-    # regression_result_visualisation(
-    #     [(points[i][0], values[i]) for i in range(len(points))],
-    #     lr.get_weights()[0],
-    #     lr.get_bias()
-    # )
+    # Print result visualisation
+    lr = config['class'](
+        X, y,
+        epochs=20,
+        learning_rate=0.001,
+        batch_size=20,
+        **config['args'])
+    lr.fit()
+    regression_result_visualisation(
+        [(points[i][0], values[i]) for i in range(len(points))],
+        lr.get_weights()[0],
+        lr.get_bias()
+    )
+
+    # Print error per iteration
+    error_visualisation(lr.get_errors())
+
+
