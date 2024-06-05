@@ -21,7 +21,7 @@ configs = [
 ]
 
 if __name__ == '__main__':
-    data = load_static_file("easy_1d.json")
+    data = load_static_file("easy_3d.json")
     points = data['points']
     values = data['values']
     X = np.array(points)
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     # print(lr.get_bias())
     # print(lr.predict(X[0]))
 
-    config = configs[0]
+    config = configs[2]
     regression_stat(X, y, config['class'], config['args'])
 
     # Print result visualisation

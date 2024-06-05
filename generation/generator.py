@@ -32,4 +32,4 @@ def generate_to_file(
 
 
 if __name__ == '__main__':
-    generate_to_file(3, 100, 0.5, 7, 0.2, "easy_3d.json")
+    generate_to_file(3, 20, 0.5, 7, 0.2, "easy_3d.json")
