@@ -6,7 +6,7 @@ from termcolor import colored
 
 from methods_module.linear_regression import LinearRegression, LearningRateScheduling
 
-epochs = [10, 50, 100]  # 200, 1000, 2000
+epochs = [10, 50, 100, 500]  # 200, 1000, 2000
 learning_rates = [0.0005, 0.001, 0.005]
 batch_sizes = [1, 5, 20, 50, 100]
 

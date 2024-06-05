@@ -21,7 +21,7 @@ configs = [
 ]
 
 if __name__ == '__main__':
-    data = load_static_file("noisy_1d.json")
+    data = load_static_file("easy_1d.json")
     points = data['points']
     values = data['values']
     X = np.array(points)
@@ -32,23 +32,23 @@ if __name__ == '__main__':
     # print(lr.predict(X[0]))
 
     config = configs[0]
-    # regression_stat(X, y, config['class'], config['args'])
+    regression_stat(X, y, config['class'], config['args'])
 
     # Print result visualisation
-    lr = config['class'](
-        X, y,
-        epochs=20,
-        learning_rate=0.001,
-        batch_size=20,
-        **config['args'])
-    lr.fit()
-    regression_result_visualisation(
-        [(points[i][0], values[i]) for i in range(len(points))],
-        lr.get_weights()[0],
-        lr.get_bias()
-    )
+    # lr = config['class'](
+    #     X, y,
+    #     epochs=20,
+    #     learning_rate=0.001,
+    #     batch_size=20,
+    #     **config['args'])
+    # lr.fit()
+    # regression_result_visualisation(
+    #     [(points[i][0], values[i]) for i in range(len(points))],
+    #     lr.get_weights()[0],
+    #     lr.get_bias()
+    # )
 
     # Print error per iteration
-    error_visualisation(lr.get_errors())
+    # error_visualisation(lr.get_errors())
 
 
