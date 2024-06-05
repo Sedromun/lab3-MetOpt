@@ -63,10 +63,10 @@ def regression_stat(X, y):
                 try:
                     start_time = time.time()
                     lr.fit()
-                    time.sleep(0.1)
+                    time.sleep(0.05)
                     end_time = time.time()
 
-                    work_time = 1000 * (end_time - start_time) - 100
+                    work_time = 1000 * (end_time - start_time) - 50
                     line.append((lr.get_error(), work_time))
                     if best is None or lr.get_error() < best:
                         best = lr.get_error()
@@ -92,3 +92,5 @@ def regression_stat(X, y):
             headers=["Epoch count"] + [f"Learning rate = {rate}" for rate in learning_rates],
             tablefmt="grid"
         ), end="\n\n\n")
+
+    print(f"Best learning rate: {best}")

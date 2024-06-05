@@ -4,10 +4,6 @@ from visualisation_module.visualisation import *
 
 if __name__ == '__main__':
     data = load_static_file("noisy_1d.json")
-
-    # X = np.array([[1], [1.5], [2], [2], [3], [3.3], [4], [5]])
-    # y = np.array([0.9, 1.4, 2.1, 2, 3.1, 3.25, 4.2, 4.9])
-
     points = data['points']
     values = data['values']
     X = np.array(points)
