@@ -1,6 +1,5 @@
 from generation.degenerator import load_static_file
-from methods_module.linear_regression import LinearRegression, LearningRateScheduling
-from methods_module.polynomial_regression import PolynomialRegression
+from visualisation_module.statistic import regression_stat
 from visualisation_module.visualisation import *
 
 if __name__ == '__main__':
@@ -14,17 +13,14 @@ if __name__ == '__main__':
     X = np.array(points)
     y = np.array(values)
 
-    lr = LinearRegression(
-        X, y,
-        epochs=1000,
-        learning_rate=0.005,
-        batch_size=5,
-        scheduling=LearningRateScheduling.STEPPED
-    )
-    lr.fit()
-    print(lr.get_weights())
-    print(lr.get_bias())
-    print(lr.predict(X[0]))
-    # print(lr.get)
-    regression_result_visualisation([(points[i][0], values[i]) for i in range(len(points))], lr.get_weights()[0], lr.get_bias())
+    # print(lr.get_weights())
+    # print(lr.get_bias())
+    # print(lr.predict(X[0]))
 
+    regression_stat(X, y)
+
+    # regression_result_visualisation(
+    #     [(points[i][0], values[i]) for i in range(len(points))],
+    #     lr.get_weights()[0],
+    #     lr.get_bias()
+    # )

@@ -24,4 +24,15 @@ def regression_result_visualisation(
     plt.show()
 
 
-
+def error_visualisation(
+        errors: list[float]
+):
+    fig, ax = plt.subplots()  # Create a figure containing a single axes.
+    ax.plot(
+        [i for i in range(len(errors))],
+        errors,
+    )  # Plot some data on the axes.
+    ax.set_xlabel('Iterations')
+    ax.set_ylabel('Error')
+    plt.title(f'LINEAR REGRESSION')
+    plt.show()
