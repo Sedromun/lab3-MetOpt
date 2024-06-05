@@ -6,7 +6,7 @@ from termcolor import colored
 
 from methods_module.linear_regression import LinearRegression, LearningRateScheduling
 
-epochs = [10, 50, 100, 200, 1000, 2000]
+epochs = [10, 50, 100]  # 200, 1000, 2000
 learning_rates = [0.0005, 0.001, 0.005]
 batch_sizes = [1, 5, 20, 50, 100]
 
@@ -41,7 +41,7 @@ def time_color(best: float | None, result: float | str) -> str:
     return 'red'
 
 
-def regression_stat(X, y):
+def regression_stat(X, y, clazz, args):
     os.system("cls")
 
     best = None
@@ -53,12 +53,12 @@ def regression_stat(X, y):
         for epoch in epochs:
             line = [epoch]
             for learning_rate in learning_rates:
-                lr = LinearRegression(
+                lr = clazz(
                     X, y,
                     epochs=epoch,
                     learning_rate=learning_rate,
                     batch_size=batch_size,
-                    scheduling=LearningRateScheduling.STEPPED
+                    **args
                 )
                 try:
                     start_time = time.time()

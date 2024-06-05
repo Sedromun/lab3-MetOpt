@@ -11,53 +11,59 @@ from tensorflow.keras.layers import Input
 
 from generation.degenerator import load_static_file
 
-data = load_static_file("noisy_1d.json")
-points = data['points']
-values = data['values']
-X = np.array(points)
-y = np.array(values)
-# X, y = make_regression(n_samples=1000, n_features=1, noise=0.2, random_state=42)
-X_train, X_test, y_train, y_test = X, X, y, y  # train_test_split(X, y, test_size=0.2, random_state=42)
-# print(X_train)
-# print(X_test)
-# print(y_train)
-# print(y_test)
-
-
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train).astype(np.float32)
-X_test = scaler.transform(X_test).astype(np.float32)
-
 optimizers = {
-    'SGD': tf.optimizers.SGD(learning_rate=0.01),
-    'Momentum': tf.optimizers.SGD(learning_rate=0.01, momentum=0.9),
-    'Nesterov': tf.optimizers.SGD(learning_rate=0.01, momentum=0.9, nesterov=True),
-    'AdaGrad': tf.optimizers.Adagrad(learning_rate=0.01),
-    'RMSProp': tf.optimizers.RMSprop(learning_rate=0.01),
-    'Adam': tf.optimizers.Adam(learning_rate=0.01)
+    'SGD': lambda x: tf.optimizers.SGD(learning_rate=x),
+    'Momentum': lambda x: tf.optimizers.SGD(learning_rate=x, momentum=0.9),
+    'Nesterov': lambda x: tf.optimizers.SGD(learning_rate=x, momentum=0.9, nesterov=True),
+    'AdaGrad': lambda x: tf.optimizers.Adagrad(learning_rate=x),
+    'RMSProp': lambda x: tf.optimizers.RMSprop(learning_rate=x),
+    'Adam': lambda x: tf.optimizers.Adam(learning_rate=x)
 }
 
-results = []
 
-for name, optimizer in optimizers.items():
-    model = Sequential()
-    model.add(Input((X_train.shape[1],)))
-    model.add(Dense(1))
-    model.compile(optimizer=optimizer, loss='mean_squared_error')
+class LibLinearRegression:
+    def __init__(self, X, y, epochs: int, batch_size: int, learning_rate: float = 0.01, **kwargs):
+        self.X = StandardScaler().fit_transform(X).astype(np.float32)
+        self.y = y
+        self.epochs = epochs
+        self.batch_size = batch_size
 
-    start_time = time.time()
-    model.fit(X_train, y_train, epochs=50, verbose=0, batch_size=20)
-    training_time = time.time() - start_time
+        if "optimizer" in kwargs:
+            self.optimizer_name = kwargs["optimizer"]
+        else:
+            self.optimizer_name = "SGD"
+        self.optimizer = optimizers[self.optimizer_name](learning_rate)
+        self.model = Sequential()
+        self.model.add(Input((X.shape[1],)))
+        self.model.add(Dense(1))
+        self.model.compile(optimizer=self.optimizer, loss='mean_squared_error')
 
-    y_pred = model.predict(X_test)
+    def fit(self):
+        self.model.fit(self.X, self.y, epochs=self.epochs, verbose=0, batch_size=self.batch_size)
 
-    mse = mean_squared_error(y_test, y_pred)
+    def get_error(self):
+        return mean_squared_error(self.y, self.model.predict(self.X))
 
-    results.append({
-        'Optimizer': name,
-        'MSE': mse,
-        'Training Time (s)': training_time
-    })
 
-results_df = pd.DataFrame(results)
-print(results_df)
+if __name__ == '__main__':
+    data = load_static_file("noisy_1d.json")
+    points = data['points']
+    values = data['values']
+    X = np.array(points)
+    y = np.array(values)
+    results = []
+
+    for name, optimizer in optimizers.items():
+        llr = LibLinearRegression(X, y, epochs=50, batch_size=20, optimizer=name)
+        start_time = time.time()
+        llr.fit()
+        training_time = time.time() - start_time
+
+        results.append({
+            'Optimizer': name,
+            'MSE': llr.get_error(),
+            'Training Time (s)': training_time
+        })
+
+    results_df = pd.DataFrame(results)
+    print(results_df)
